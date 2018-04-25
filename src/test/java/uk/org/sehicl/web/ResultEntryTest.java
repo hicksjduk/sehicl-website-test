@@ -4,12 +4,9 @@ import static net.sourceforge.jwebunit.junit.JWebUnit.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.text.DecimalFormat;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import net.sourceforge.jwebunit.api.IElement;
 
 public class ResultEntryTest
 {
@@ -20,7 +17,7 @@ public class ResultEntryTest
     {
         setBaseUrl("http://localhost:8080");
     }
-    
+
     @Test
     public void testGetResultEntryPage()
     {
@@ -49,15 +46,12 @@ public class ResultEntryTest
         setBowlerData(2, 2, "F Steele", 3, 34);
         setBowlerData(2, 3, "M Hallett", 3, 14);
         setBowlerData(2, 4, "D Gorvin", 3, 29);
-        assertThat(getElementById("total1").getAttribute("value")).isEqualTo(DF.format(165));
-        assertThat(getElementById("wickets1").getAttribute("value")).isEqualTo(DF.format(4));
-        assertThat(getElementById("overs1").getAttribute("value")).isEqualTo(DF.format(12));
-        assertThat(getElementById("total2").getAttribute("value")).isEqualTo(DF.format(108));
-        assertThat(getElementById("wickets2").getAttribute("value")).isEqualTo(DF.format(4));
-        assertThat(getElementById("overs2").getAttribute("value")).isEqualTo(DF.format(12));
+        checkAutoFields(1, 165, 4, 12);
+        checkAutoFields(2, 108, 4, 12);
     }
-    
-    private void setBatsmanData(int innings, int batter, String name, String howOut, String bowler, int score)
+
+    private void setBatsmanData(int innings, int batter, String name, String howOut, String bowler,
+            int score)
     {
         setTextField("batsman" + innings + batter, name);
         selectOption("howout" + innings + batter, howOut);
@@ -73,5 +67,15 @@ public class ResultEntryTest
         setTextField("bowler" + innings + batter, name);
         selectOption("overs" + innings + batter, DF.format(overs));
         setTextField("runsConceded" + innings + batter, DF.format(runs));
+    }
+
+    private void checkAutoFields(int innings, int runs, int wickets, float overs)
+    {
+        assertThat(getElementById("total" + innings).getAttribute("value"))
+                .isEqualTo(DF.format(runs));
+        assertThat(getElementById("wickets" + innings).getAttribute("value"))
+                .isEqualTo(DF.format(wickets));
+        assertThat(getElementById("overs" + innings).getAttribute("value"))
+                .isEqualTo(DF.format(overs));
     }
 }
